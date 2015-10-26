@@ -27,8 +27,8 @@ import org.ksoap2.serialization.MarshalFloat;
 
 public class PatientBinding {
     
-    public String NAMESPACE ="http://meetmdservice.azurewebsites.net/API/XmlService.svc";
-    public String url="{0}";
+    public String NAMESPACE ="http://tempuri.org/";
+    public String url="http://meetmdservice.azurewebsites.net/API/XmlService.svc/Patient";
     public int timeOut = 180;
     public IWsdl2CodeEvents eventHandler;
     public SoapProtocolVersion soapVersion;

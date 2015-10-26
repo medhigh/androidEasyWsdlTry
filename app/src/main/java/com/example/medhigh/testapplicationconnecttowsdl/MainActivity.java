@@ -5,11 +5,14 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import Wsdl2Code.WebServices.ServiceProviderBinding.AuthtokenXml;
+import Wsdl2Code.WebServices.ServiceProviderBinding.IWsdl2CodeEvents;
 import Wsdl2Code.WebServices.ServiceProviderBinding.PatientBinding;
 import Wsdl2Code.WebServices.ServiceProviderBinding.RequestResultOfAuthtokenXmlkZUuIBUF;
+import Wsdl2Code.WebServices.ServiceProviderBinding.RequestResultOfboolean;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -28,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         new AsyncCaller().execute();
     }
-    private class AsyncCaller extends AsyncTask<Void, Void, String>
+    private class AsyncCaller extends AsyncTask<Void, Void, String> implements IWsdl2CodeEvents
     {
         ProgressDialog pdLoading = new ProgressDialog(MainActivity.this);
 
@@ -42,10 +45,12 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected String doInBackground(Void... params) {
-            PatientBinding binding = new PatientBinding();
-            RequestResultOfAuthtokenXmlkZUuIBUF rq = binding.PatientLogin("ilya123", "test123");
+            PatientBinding binding = new PatientBinding(this//,"http://meetmdservice.azurewebsites.net/API/XmlService.svc"
+            );
+            RequestResultOfboolean res= binding.PatientCheckRegistered("ilya123");
+            //RequestResultOfAuthtokenXmlkZUuIBUF rq = binding.PatientLogin("ilya123", "test123");
             //AuthtokenXml token = rq.result;
-            return "";//token.token;
+            return Boolean.toString(res.result)+" "+Integer.toString(res.resultStatus);//token.token;
         }
 
         @Override
@@ -55,5 +60,24 @@ public class MainActivity extends AppCompatActivity {
             pdLoading.dismiss();
         }
 
+        @Override
+        public void Wsdl2CodeStartedRequest() {
+            Log.d("333_1","started");
+        }
+
+        @Override
+        public void Wsdl2CodeFinished(String methodName, Object Data) {
+            Log.d("333_2",methodName);
+        }
+
+        @Override
+        public void Wsdl2CodeFinishedWithException(Exception ex) {
+            Log.d("333_3",ex.getMessage());
+        }
+
+        @Override
+        public void Wsdl2CodeEndedRequest() {
+            Log.d("333_4","ended");
+        }
     }
 }
